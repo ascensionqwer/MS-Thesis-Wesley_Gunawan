@@ -31,40 +31,67 @@
 \citation{raspberrypi2021hardware}
 \citation{apple2022iphone}
 \citation{arm2023mobile}
+\citation{zhou2024simplification}
+\citation{apple2022iphone}
+\citation{jalali2022vevid}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Implementation on smart phone and embedded systems}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {III}Methodology}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Theoretical Foundation}{3}{}\protected@file@percent }
-\newlabel{eq:nlse}{{3}{3}{}{equation.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Phase-Stretch Transform}{3}{}\protected@file@percent }
-\newlabel{eq:pst}{{4}{3}{}{equation.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Proposed Algorithm}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Experimental Setup}{3}{}\protected@file@percent }
-\bibcite{apple2022iphone}{1}
-\bibcite{arm2023mobile}{2}
-\bibcite{asghari2015edge}{3}
-\bibcite{bradski2008opencv}{4}
-\bibcite{deVore2014coherent}{5}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}High-Bit Depth Processing and RAW Sensor Integration}{3}{}\protected@file@percent }
+\citation{bradski2008opencv}
+\citation{gonzalez2018digital}
+\citation{jalali2022vevid}
+\citation{hore2010image}
+\citation{zhou2024simplification}
+\citation{bradski2008opencv}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visual comparison of VEViD enhancement across bit depths. The high-bit depth implementation (c) preserves shadow detail and gradient smoothness significantly better than the standard 8-bit pipeline (b), avoiding banding artifacts visible in darker regions.}}{4}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:bit_depth_comparison}{{1}{4}{}{figure.1}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Original Dark RAW Input (12-bit)}}}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Standard 8-bit VEViD}}}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {High-Bit VEViD (16-bit)}}}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}VEViD versus Gamma Correction}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Peak Signal-to-Noise Ratio (PSNR) Comparison}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces PSNR Comparison Between VEViD and Gamma Correction on Low-Light Test Images}}{4}{}\protected@file@percent }
+\newlabel{tab:psnr_comparison}{{I}{4}{}{table.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-A}1}Visual Quality Assessment}{4}{}\protected@file@percent }
+\citation{zhou2024simplification}
+\citation{asghari2015edge}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Visual comparison of VEViD versus gamma correction on low-light imagery. VEViD demonstrates superior shadow detail preservation and reduced noise amplification, as evidenced by higher PSNR values.}}{5}{}\protected@file@percent }
+\newlabel{fig:vevid_vs_gamma}{{2}{5}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Computational Performance Comparison}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Noise Amplification Characteristics}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Methodology}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Theoretical Foundation}{5}{}\protected@file@percent }
+\newlabel{eq:nlse}{{5}{5}{}{equation.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Phase-Stretch Transform}{5}{}\protected@file@percent }
+\newlabel{eq:pst}{{6}{5}{}{equation.6}{}}
+\bibcite{asghari2015edge}{1}
+\bibcite{bradski2008opencv}{2}
+\bibcite{deVore2014coherent}{3}
+\bibcite{gonzalez2018digital}{4}
+\bibcite{hore2010image}{5}
 \bibcite{jalali2019empowering}{6}
 \bibcite{jalali2022vevid}{7}
 \bibcite{mahjoubfar2017time}{8}
 \bibcite{raissi2019physics}{9}
 \bibcite{raspberrypi2021hardware}{10}
 \bibcite{suthar2017fast}{11}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Proposed Algorithm}{6}{}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Adaptive Phase-Stretch Enhancement}}{6}{}\protected@file@percent }
+\newlabel{alg:adaptive_pst}{{1}{6}{}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experiments}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Datasets}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Evaluation Metrics}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Results and Discussion}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Quantitative Results}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Performance Comparison on LOL Dataset}}{6}{}\protected@file@percent }
+\newlabel{tab:comparison}{{II}{6}{}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Power Efficiency Analysis}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Qualitative Results}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Discussion}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion and Future Directions}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
 \bibcite{zhou2022unified}{12}
 \bibcite{zhou2023phycv}{13}
 \bibcite{zhou2024simplification}{14}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Adaptive Phase-Stretch Enhancement}}{4}{}\protected@file@percent }
-\newlabel{alg:adaptive_pst}{{1}{4}{}{algorithm.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Datasets}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Evaluation Metrics}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Quantitative Results}{4}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Performance Comparison on LOL Dataset}}{4}{}\protected@file@percent }
-\newlabel{tab:comparison}{{I}{4}{}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Power Efficiency Analysis}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Qualitative Results}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Discussion}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion and Future Directions}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{4}{}\protected@file@percent }
-\gdef \@abspage@last{4}
+\gdef \@abspage@last{7}
