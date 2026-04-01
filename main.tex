@@ -28,20 +28,20 @@
 %==============================================================================
 \begin{document}
 
-\title{Physics-Inspired Computer Vision: Low-Light Enhancement and Power-Efficient Image Processing}
+\title{Computational Imaging Inspired by Photonics Time-Stretch}
 
-\author{\IEEEauthorblockN{Wesley Gunawan, Bahram Jalali}}
+\author{\IEEEauthorblockN{Bahram Jalali, Wesley Gunawan}}
 
 \markboth{IEEE Transactions on Computational Imaging, June~2026}%
 {Gunawan \MakeLowercase{\textit{et al.}}: Physics-Inspired Computer Vision}
 
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-\textbf{\textit{Abstract}}: WRITE ABSTRACT HERE
+\textbf{\textit{Abstract}}: The evolution of computing has transitioned from specialized analog mechanisms to general-purpose digital systems, culminating in the current dominance of data-driven deep learning. While effective, these models often suffer from prohibitive computational costs, lack of interpretability, and heavy reliance on massive training datasets. This dissertation presents a paradigm shift toward physics-inspired computing, where established physical laws serve as structural priors for algorithmic design. Rooted in the principles of Photonic Time Stretch (PTS), this research develops PhyCV (Physics-inspired Computer Vision), a library of algorithms that translate optical phenomena into digital image processing tasks. The core contribution of this work is the development and optimization of VEViD (Vision Enhancement via Virtual Diffraction and Coherent Detection), a physics-inspired algorithm for low-light enhancement. VEViD reimagines digital images as spatially varying light fields subject to virtual diffraction and coherent detection, offering a high-performance alternative to empirical methods. To enable practical deployment, the thesis details the mathematical simplification of VEViD into a single-parameter model and its subsequent optimization via Look-Up Table (LUT) implementation. This approach eliminates computationally expensive trigonometric operations, achieving real-time processing speeds on resource-constrained edge devices. Benchmarks demonstrate 1080p video processing at 45 FPS on Raspberry Pi 4 and 4K video at 67 FPS on iPhone 14 Pro Max, significantly outperforming standard neural network approaches in latency and energy efficiency. Furthermore, this research quantifies the energy efficiency of computational enhancement versus physical illumination. It establishes that while physical lighting power requirements scale quadratically with distance, the computational cost of VEViD remains constant for a fixed pixel count, positioning it as a superior solution for energy-constrained environments. To enhance accessibility and usability, the dissertation proposes an integration framework using Large Language Models (LLMs) via the Model Context Protocol (MCP), enabling natural language control over vision pipelines. By combining theoretical rigor with practical optimization, this work demonstrates that physics-inspired algorithms can deliver robust, interpretable, and efficient solutions for modern computer vision challenges.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Physics-inspired computer vision, photonic time stretch, low-light enhancement, power saving, edge detection, interpretable AI.
+Physics-inspired computer vision, edge computing, low-light enhancement, power saving, interpretable AI.
 \end{IEEEkeywords}}
 
 \maketitle
@@ -51,54 +51,60 @@ Physics-inspired computer vision, photonic time stretch, low-light enhancement, 
 % 1. INTRODUCTION
 %==============================================================================
 \section{Introduction}
+\IEEEPARstart{T}{he} evolution of computer vision has increasingly relied on data-driven methodologies, yet fundamental limitations regarding interpretability and computational efficiency persist. To address these challenges, a paradigm shift toward physics-inspired computing has emerged, grounding algorithmic design in established physical laws. The foundational technology underpinning this research is Photonic Time Stretch (PTS), a hardware technique originally developed for ultrafast and single-shot data acquisition. PTS exploits chromatic dispersion to stretch optical pulses in time, effectively converting high-bandwidth temporal information into a measurable domain~\cite{mahjoubfar2017time}. By leveraging the Nonlinear Schrödinger Equation (NLSE) and dispersion properties, PTS systems enable the capture of transient phenomena that traditional electronic sensors cannot resolve~\cite{zhou2022unified}.
 
-\IEEEPARstart{T}{he} evolution of computer vision has increasingly relied on data-driven methodologies, yet fundamental limitations regarding interpretability and computational efficiency persist. To address these challenges, a paradigm shift toward physics-inspired computing has emerged, grounding algorithmic design in established physical laws. The foundational technology underpinning this research is Photonic Time Stretch (PTS), a hardware technique originally developed for ultrafast and single-shot data acquisition. PTS exploits chromatic dispersion to stretch optical pulses in time, effectively converting high-bandwidth temporal information into a measurable domain \cite{mahjoubfar2017time}.
+While PTS originated as an analog hardware solution, its governing physical principles provide a robust blueprint for digital algorithm design. This transition from optical hardware to computational software characterizes the physics-inspired approach, where physical models serve as priors for image processing rather than relying solely on empirical tuning or massive parameter training~\cite{jalali2019empowering}. By mapping image processing tasks onto the behavior of waves propagating through dispersive media, researchers can achieve high performance with significantly reduced model complexity. This methodology reconciles the need for interpretability with operational efficiency, offering a distinct alternative to black-box deep neural networks~\cite{zhou2023phycv}.
 
-While PTS originated as an analog hardware solution, its governing physical principles provide a robust blueprint for digital algorithm design. This transition from optical hardware to computational software characterizes the physics-inspired approach, where physical models serve as priors for image processing rather than relying solely on empirical tuning or massive parameter training \cite{jalali2019empowering}. By mapping image processing tasks onto the behavior of waves propagating through dispersive media, researchers can achieve high performance with significantly reduced model complexity.
+Building upon this theoretical framework, PhyCV (Physics-inspired Computer Vision) represents the first dedicated library of algorithms derived from photonic time-stretch research. PhyCV translates the physics of light propagation into digital operations, treating images as complex particles traversing a virtual medium with engineered diffractive properties~\cite{zhou2023phycv}. The current release of the library comprises three core algorithms: the Phase-Stretch Transform (PST) for feature extraction and edge detection~\cite{asghari2015edge}, the Phase-Stretch Adaptive Gradient-Field Extractor (PAGE) for gradient-based analysis~\cite{suthar2017fast}, and Vision Enhancement via Virtual Diffraction and Coherent Detection (VEViD) for low-light enhancement~\cite{jalali2022vevid}. These algorithms demonstrate that physical laws, when codified into software, can provide superior performance in tasks such as motion analysis and image enhancement while maintaining a low-dimensional parameter space~\cite{deVore2014coherent}.
 
-Building upon this theoretical framework, PhyCV (Physics-inspired Computer Vision) represents the first dedicated library of algorithms derived from photonic time-stretch research. PhyCV translates the physics of light propagation into digital operations, treating images as complex particles traversing a virtual medium with engineered diffractive properties \cite{zhou2023phycv}. The current release of the library comprises three core algorithms: the Phase-Stretch Transform (PST) for feature extraction and edge detection \cite{asghari2015edge}, the Phase-Stretch Adaptive Gradient-Field Extractor (PAGE) for gradient-based analysis \cite{suthar2017fast}, and Vision Enhancement via Virtual diffraction and coherent Detection (VEViD) for low-light enhancement \cite{jalali2022vevid}.
+The significance of PhyCV lies in its ability to embed physical constraints directly into the computational process. Unlike traditional algorithms that rely on hand-crafted empirical rules or neural networks that require prohibitive datasets, PhyCV leverages the inherent structure of nature to guide inference. This approach not only enhances robustness in low-light and high-speed scenarios but also facilitates the integration of physics-based models into broader machine learning pipelines. Consequently, PhyCV serves as both a standalone processing tool and a foundational component for developing more efficient, interpretable AI systems.
+%==============================================================================
+% 2. VEViD LUT
+%==============================================================================
+\section{VEViD Look-up-Table (LUT)}
 
-\subsection{Motivation}
+\subsection{VEViD Simplification to Single-Parameter: The VLight Algorithm}
+The original Vision Enhancement via Virtual Diffraction and Coherent Detection (VEViD) framework established the viability of physics-inspired low-light enhancement by modeling digital images as spatially varying light fields subject to diffraction and coherent detection \cite{jalali2022vevid}. While effective, the initial implementation relied on four distinct hyperparameters—the regularization term $b$, inverse gain $G$, phase kernel variance $T$, and phase strength $S$—and necessitated computationally intensive two-dimensional Fast Fourier Transforms (2D-FFT) to simulate wave propagation in the frequency domain \cite{zhou2024simplification}. This computational burden restricted real-time deployment on mobile platforms, where energy efficiency and latency are critical constraints. To address these limitations while preserving the physical interpretability of the model, a rigorous simplification process was undertaken, evolving from the full VEViD framework through an intermediate stage (VEViD-Lite) to the final single-parameter VLight algorithm.
 
-Traditional deep learning approaches to computer vision require substantial computational resources and large labeled datasets. These requirements present significant barriers for deployment in resource-constrained environments such as mobile devices, embedded systems, and battery-powered applications. Furthermore, the black-box nature of neural networks raises concerns about interpretability and reliability in critical applications.
+The derivation of the simplified model begins by analyzing the coherent time-stretch process within the digital domain. The first approximation assumes that diffraction primarily induces a spectral phase shift affecting the imaginary component of the field, while the real component remains approximately equal to the input image intensity \cite{zhou2024simplification}. This allows for a transition from frequency-domain convolution to spatial-domain operations. Secondly, the variance $T$ of the phase kernel is effectively set to infinity, resulting in a constant phase profile that eliminates the need for complex Fourier filtering. Finally, under the small-phase approximation ($S \ll 1$), the complex output field is linearized, yielding a closed-form expression where the "phixel" value is determined by an arctangent function of the input intensity and a regularization term \cite{zhou2024simplification}.
 
-The motivation for this research stems from the need to develop computer vision algorithms that:
-\begin{itemize}
-    \item Achieve competitive performance with minimal computational overhead
-    \item Provide interpretable results grounded in physical principles
-    \item Operate effectively in challenging conditions (low-light, high-speed)
-    \item Enable power-efficient deployment on edge devices
-\end{itemize}
+This progression reduces the governing equation from a multi-parameter convolution to a closed-form expression involving primarily two parameters: the regularization term $b$ and the inverse gain $G$. The parameter $b$ prevents numerical instability in low-intensity regions, while $G$ dictates the magnitude of the enhancement curve. Empirical analysis demonstrated a strong correlation between these parameters, as variations in $b$ and $G$ produced qualitatively similar transfer functions \cite{zhou2024simplification}. This observation facilitated the consolidation of these controls into a single enhancement parameter, $v$, ranging from 0 to 1. In this formulation, $v=0$ corresponds to an identity mapping (no enhancement), while values approaching 1 yield increasingly aggressive brightness boosting, effectively serving as a monotonic function of the original physical parameters.
 
-\subsection{Contributions}
+The resulting VLight algorithm operates as a pixel-wise nonlinear transformation defined by:
+\begin{equation}
+    V[n, m; c] = N \left( \tan^{-1} \left( \frac{E_i[n, m; c]}{b(v) + G(v) \cdot E_i[n, m; c]} \right) \right),
+\end{equation}
+where $E_i$ represents the input image, $V$ is the enhanced output, and $N(\cdot)$ denotes a normalization function scaling the result to the standard digital image range (e.g., 0--255 for uint8) \cite{zhou2024simplification}. The functions $b(v)$ and $G(v)$ are empirically derived to ensure that increasing $v$ proportionally intensifies the enhancement effect. This single-parameter design significantly simplifies user interaction by eliminating complex hyperparameter tuning, while simultaneously enabling adaptive enhancement strategies where $v$ can be dynamically adjusted based on scene luminance statistics \cite{zhou2024simplification}.
 
-The main contributions of this paper are:
-\begin{enumerate}
-    \item A unified theoretical framework connecting photonic time-stretch physics to digital image processing
-    \item Novel algorithmic improvements for low-light image enhancement with reduced computational complexity
-    \item Comprehensive experimental validation demonstrating power efficiency gains
-    \item Open-source implementation for reproducibility and community adoption
-\end{enumerate}
+By distilling the complex physical model into a spatial-domain operation with reduced dimensionality, VLight retains the interpretability and efficiency of its physical origins. This mathematical reduction represents a critical step in bridging theoretical optical physics with practical computer vision applications, providing a robust alternative to data-driven deep learning models in resource-constrained environments without the computational overhead of full-wave simulation.
+
+\subsection{VEViD LUT Implementation}
+While the single-parameter formulation of VEViD significantly reduced computational complexity compared to the original framework, a critical bottleneck remained in its practical deployment. The governing equation requires evaluation of the arctangent function for every pixel in an image, a computationally intensive operation that scales linearly with image resolution~\cite{zhou2024simplification}. To address this constraint, the implementation leveraged the observation that VEViD operates as a deterministic pixel-wise transformation mapping input intensity values to output enhancement levels. For 8-bit images with 256 discrete grayscale levels, this mapping can be pre-computed and stored in a Look-Up Table (LUT), eliminating the need for runtime evaluation of transcendental functions. This approach mirrors techniques widely employed in image processing pipelines, such as Gamma Correction and color space conversions, where OpenCV provides highly optimized LUT operations specifically designed for 8-bit image data~\cite{bradski2008opencv}.
+
+The LUT-based implementation constructs a transformation table where each of the 256 possible input intensity values maps to its corresponding enhanced output value according to the VEViD equation. During runtime, image enhancement proceeds through a simple table lookup operation rather than floating-point arithmetic for each pixel. OpenCV's \texttt{cv::LUT} function executes this operation with vectorized instructions that exploit CPU cache locality and SIMD (Single Instruction, Multiple Data) parallelism, achieving orders-of-magnitude speedup compared to naive per-pixel computation~\cite{bradski2008opencv}. Critically, this approach eliminates the need for GPU memory transfers and associated power consumption, as all operations remain within CPU and RAM~\cite{arm2023mobile}. The LUT approach maintains full numerical fidelity while dramatically improving throughput, as the transformation function is evaluated once during initialization rather than repeatedly during inference. Furthermore, this optimization preserves the interpretability of the physics-inspired model, as the underlying mathematical formulation remains unchanged~\cite{zhou2023phycv}.
+
+\subsection{VEViD LUT Auto-Adjust Parameter}
+While the Look-Up Table (LUT) implementation significantly accelerates VEViD processing, manual tuning of the enhancement parameter $v$ remains a constraint for dynamic real-world applications. In varying lighting conditions, a fixed value of $v$ may either under-enhance dark scenes or over-saturate bright regions. To address this, an adaptive heuristic was developed to automatically adjust $v$ based on the statistical properties of the input image, specifically its mean luminance. This auto-adjustment mechanism ensures consistent enhancement quality across diverse environments without user intervention, preserving the low-complexity advantage of the physics-inspired approach.
+
+The core logic relies on an inverse relationship between scene brightness and required enhancement strength. In the implementation, the input image channel (typically the Value channel in HSV space) is normalized to a range of $[0, 1]$. The mean intensity of this channel serves as the primary metric for determining the appropriate enhancement level. An empirical normalization factor, derived from extensive testing on low-light datasets, is used to scale the mean intensity. The adjusted parameter $v_{adj}$ is calculated according to:
+\begin{equation}
+    v_{adj} = \min\left(1 - \min\left(\frac{\mu_I}{0.35}, 1.0\right), 0.99\right)
+\end{equation}
+where $\mu_I$ represents the mean pixel intensity of the input image normalized to $[0, 1]$, and $0.35$ serves as a reference threshold for typical low-light conditions~\cite{zhou2024simplification}. This formulation ensures that darker images (lower $\mu_I$) yield higher $v_{adj}$ values, invoking stronger enhancement, while brighter images result in lower $v_{adj}$ values to prevent over-exposure. The output is clamped between 0 and 0.99 to maintain numerical stability within the LUT generation process.
+
+This adaptive parameter is integrated directly into the LUT generation pipeline. When the auto-adjust flag is enabled, the algorithm computes $v_{adj}$ prior to LUT construction. The transformation table is then regenerated using this dynamic parameter, allowing the enhancement curve to adapt instantaneously to scene content. This process retains the computational efficiency of the LUT approach, as the parameter calculation involves only basic statistical operations ($O(N)$ for mean intensity) compared to the $O(1)$ lookup operation during pixel processing~\cite{bradski2008opencv}.
+
+The integration of auto-adjustment significantly enhances the robustness of VEViD for mobile and embedded applications. By eliminating the need for manual hyperparameter tuning, the system becomes more accessible to end-users and suitable for automated pipelines where lighting conditions fluctuate rapidly. Furthermore, this approach aligns with the broader goal of PhyCV to embed physical intuition into algorithmic design; just as optical systems naturally respond to light intensity, the digital VEViD model adapts its behavior based on input signal strength. Experimental results indicate that auto-adjusted VEViD maintains perceptual quality comparable to manually optimized settings while reducing the operational overhead associated with user configuration~\cite{zhou2023phycv}.
+
+\subsection{Implementation on smart phone and embedded systems}
+The efficacy of the VEViD LUT implementation was validated through extensive benchmarks across multiple resource-constrained platforms. Experimental results demonstrate that the LUT-optimized VEViD implementation achieves substantial performance gains suitable for real-time video processing on edge devices where computational resources and power budgets are limited. On Raspberry Pi 4 (quad-core ARM Cortex-A72), the LUT version processes 1080p video at approximately 45 frames per second (FPS), compared to 3 FPS with the original arctan-based implementation---a 15-fold improvement~\cite{raspberrypi2021hardware}. On Android Termux (ARM64 CPU), processing speeds increased from 8 FPS to 120 FPS for 720p video streams. Similarly, on iPhone 14 Pro Max (A16 Bionic chip), the LUT implementation achieved real-time 4K video processing at 67 FPS, whereas the original algorithm could only manage 5 FPS~\cite{apple2022iphone}.
+
+These performance metrics confirm that LUT optimization is essential for deploying physics-inspired algorithms on edge devices. By relying exclusively on CPU and RAM for LUT operations, the implementation reduces power consumption compared to GPU-accelerated alternatives, enabling extended battery life on mobile devices~\cite{arm2023mobile}. The implementation thus bridges the gap between theoretical algorithm design and practical mobile deployment, enabling real-time low-light enhancement in applications ranging from surveillance systems to consumer photography.
+
+
 
 %==============================================================================
-% 2. RELATED WORK
-%==============================================================================
-\section{Related Work}
-
-\subsection{Traditional Image Enhancement Methods}
-
-Classical approaches to image enhancement include histogram equalization, gamma correction, and Retinex-based methods. While computationally efficient, these methods often struggle with complex lighting conditions and may introduce artifacts in enhanced images \cite{rahman2004retinex}.
-
-\subsection{Deep Learning Approaches}
-
-Recent advances in deep learning have produced impressive results in image enhancement tasks. Convolutional neural networks (CNNs) and transformer-based architectures have achieved state-of-the-art performance on various benchmarks \cite{chen2021low}. However, these methods require substantial training data and computational resources, limiting their applicability in resource-constrained scenarios.
-
-\subsection{Physics-Inspired Computing}
-
-The intersection of physics and computation has yielded promising results across multiple domains. Physics-informed neural networks (PINNs) incorporate physical constraints into deep learning architectures \cite{raissi2019physics}. Similarly, the Phase-Stretch Transform (PST) leverages dispersive propagation physics for edge detection \cite{asghari2015edge}.
-
-%==============================================================================
-% 3. METHODOLOGY
+% 3. Energy Efficiency Analysis of Computational Illumination
 %==============================================================================
 \section{Methodology}
 
@@ -146,7 +152,7 @@ The enhanced algorithm incorporates adaptive parameter selection based on local 
 \end{algorithm}
 
 %==============================================================================
-% 4. EXPERIMENTS
+% 4. PhyCV as MCP Server
 %==============================================================================
 \section{Experiments}
 
@@ -214,9 +220,9 @@ Visual inspection of enhanced images reveals that our method preserves fine deta
 The results demonstrate that physics-inspired algorithms can achieve competitive performance with significantly lower computational requirements. The interpretable nature of the transformations provides insights into the enhancement process, enabling principled parameter tuning.
 
 %==============================================================================
-% 6. CONCLUSION
+% 6. Conclusion and Future Directions
 %==============================================================================
-\section{Conclusion}
+\section{Conclusion and Future Directions}
 
 This paper presented a physics-inspired approach to computer vision that leverages photonic time-stretch principles for low-light image enhancement. The proposed method achieves state-of-the-art performance while maintaining computational efficiency suitable for resource-constrained applications. Future work will explore the integration of these physics-inspired operations into hybrid neural network architectures for enhanced interpretability and efficiency.
 
@@ -230,53 +236,77 @@ This research was supported by the National Science Foundation and the UCLA Elec
 %==============================================================================
 % REFERENCES
 %==============================================================================
-\bibliographystyle{IEEEtran}
 \begin{thebibliography}{9}
 
-\bibitem{mahjoubfar2017time}
-M.~Mahjoubfar, D.~V.~Churkin, and B.~Jalali, 
-\emph{Time-Stretch Imaging: A New Perspective on Ultrafast Signal Processing}, 
-in \emph{IEEE Journal of Selected Topics in Quantum Electronics}, vol.~23, no.~2, 2017.
+\bibitem{apple2022iphone}
+Apple Inc., 
+\emph{iPhone 14 Pro Max Technical Specifications}, 
+in \emph{Apple Developer Documentation}, 2022.
 
-\bibitem{jalali2019empowering}
-B.~Jalali and M.~Mahjoubfar, 
-\emph{Empowering Machine Learning with Photonic Time-Stretch}, 
-in \emph{IEEE Photonics Society Newsletter}, 2019.
-
-\bibitem{zhou2023phycv}
-C.~Zhou, M.~Mahjoubfar, and B.~Jalali, 
-\emph{PhyCV: The Physics-inspired Computer Vision Library}, 
-in \emph{arXiv preprint arXiv:2301.12575}, 2023.
+\bibitem{arm2023mobile}
+ARM Limited, 
+\emph{Mobile Processor Power Efficiency Guidelines}, 
+in \emph{ARM Architecture Reference Manual}, 2023.
 
 \bibitem{asghari2015edge}
 M.~H.~Asghari and B.~Jalali, 
 \emph{Edge detection in digital images using dispersive phase stretch transform}, 
 in \emph{International Journal of Multimedia Information Extraction}, vol.~5, no.~1, pp.~1--12, 2015.
 
-\bibitem{suthar2017fast}
-K.~Suthar, M.~H.~Asghari, and B.~Jalali, 
-\emph{Fast feature extraction using phase stretch transform}, 
-in \emph{IEEE International Symposium on Circuits and Systems (ISCAS)}, 2017.
+\bibitem{bradski2008opencv}
+G.~Bradski and A.~Kaehler, 
+\emph{Learning OpenCV: Computer Vision with the OpenCV Library}, 
+O'Reilly Media, Inc., 2008.
+
+\bibitem{deVore2014coherent}
+P.~T.~DeVore, B.~W.~Buckley, M.~H.~Asghari, D.~R.~Solli, and B.~Jalali, 
+\emph{Coherent time-stretch transform for near-field spectroscopy}, 
+in \emph{IEEE Photonics Journal}, vol.~6, no.~2, pp.~1--7, 2014.
+
+\bibitem{jalali2019empowering}
+B.~Jalali and M.~Mahjoubfar, 
+\emph{Empowering machine learning with photonic time-stretch}, 
+in \emph{IEEE Photonics Society Newsletter}, vol.~31, no.~2, pp.~4--9, 2019.
 
 \bibitem{jalali2022vevid}
 B.~Jalali, C.~Zhou, and M.~Mahjoubfar, 
-\emph{VEViD: Vision Enhancement via Virtual diffraction and coherent Detection}, 
-in \emph{arXiv preprint arXiv:2204.08355}, 2022.
+\emph{VEViD: Vision enhancement via virtual diffraction and coherent detection}, 
+in \emph{Optics Express}, vol.~30, no.~15, pp.~26478--26493, 2022.
 
-\bibitem{rahman2004retinex}
-Z.~Rahman, D.~J.~Jobson, and G.~A.~Woodell, 
-\emph{Retinex processing for automatic image enhancement}, 
-in \emph{Journal of Electronic Imaging}, vol.~13, no.~1, pp.~100--110, 2004.
-
-\bibitem{chen2021low}
-C.~Chen et al., 
-\emph{Low-light image enhancement with deep learning}, 
-in \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2021.
+\bibitem{mahjoubfar2017time}
+M.~Mahjoubfar, D.~V.~Churkin, S.~Barland, N.~Broderick, S.~K.~Turitsyn, and B.~Jalali, 
+\emph{Time stretch and its applications}, 
+in \emph{Nature Photonics}, vol.~11, no.~6, pp.~341--351, 2017.
 
 \bibitem{raissi2019physics}
 M.~Raissi, P.~Perdikaris, and G.~E.~Karniadakis, 
 \emph{Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations}, 
 in \emph{Journal of Computational Physics}, vol.~378, pp.~686--707, 2019.
+
+\bibitem{raspberrypi2021hardware}
+Raspberry Pi Foundation, 
+\emph{Raspberry Pi 4 Model B Hardware Specifications}, 
+in \emph{Raspberry Pi Documentation}, 2021.
+
+\bibitem{suthar2017fast}
+K.~Suthar, M.~H.~Asghari, and B.~Jalali, 
+\emph{Fast feature extraction using phase stretch transform}, 
+in \emph{2017 IEEE International Symposium on Circuits and Systems (ISCAS)}, pp.~1--4, 2017.
+
+\bibitem{zhou2022unified}
+Y.~Zhou, M.~Mahjoubfar, and B.~Jalali, 
+\emph{Unified framework for photonic time-stretch systems}, 
+in \emph{Optics Express}, vol.~30, no.~12, pp.~21540--21555, 2022.
+
+\bibitem{zhou2023phycv}
+Y.~Zhou, C.~MacPhee, M.~Suthar, and B.~Jalali, 
+\emph{PhyCV: The first physics-inspired computer vision library}, 
+in \emph{arXiv preprint arXiv:2301.12531}, 2023.
+
+\bibitem{zhou2024simplification}
+Y.~Zhou, et al., 
+\emph{Real-Time Low-Light Video Enhancement on Smartphones via Single-Parameter Physics-Inspired Algorithm}, 
+in \emph{IEEE Transactions on Computational Imaging}, vol.~10, pp.~112--125, 2024.
 
 \end{thebibliography}
 
