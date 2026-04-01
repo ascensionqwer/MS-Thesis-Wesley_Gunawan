@@ -1,0 +1,243 @@
+\documentclass[12pt, letterpaper]{article}
+
+%==============================================================================
+% PACKAGES
+%==============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{siunitx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% Page geometry
+\geometry{left=1in, right=1in, top=1in, bottom=1in}
+
+% Line spacing
+\onehalfspacing
+
+%==============================================================================
+% TITLE AND AUTHOR INFORMATION
+%==============================================================================
+\title{\textbf{Title of Your Scientific Paper}}
+
+\author{
+    Wesley Gunawan$^{1,*}$ \quad 
+    Bahram Jalali$^{1}$ \\
+    \texttt{wesleygwn@ucla.edu}
+}
+
+\date{June 1st, 2026}
+
+\begin{document}
+
+\maketitle
+
+%==============================================================================
+% ABSTRACT
+%==============================================================================
+\begin{abstract}
+\noindent 
+Write your abstract here. The abstract should be a concise summary of your research, 
+typically 150-250 words. It should include the problem statement, methodology, 
+key results, and main conclusions. Avoid citations in the abstract.
+\end{abstract}
+
+%==============================================================================
+% KEYWORDS
+%==============================================================================
+\vspace{0.5cm}
+\noindent\textbf{Keywords:} keyword1, keyword2, keyword3, keyword4
+
+%==============================================================================
+% 1. INTRODUCTION
+%==============================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+The introduction section should provide background information on the research 
+problem, state the objectives, and outline the contributions of this work.
+
+\subsection{Background}
+\label{subsec:background}
+
+Provide relevant background information and context for your research.
+
+\subsection{Motivation}
+\label{subsec:motivation}
+
+Explain why this research is important and what gap it addresses.
+
+\subsection{Contributions}
+\label{subsec:contributions}
+
+List the main contributions of this paper:
+\begin{itemize}
+    \item First contribution
+    \item Second contribution
+    \item Third contribution
+\end{itemize}
+
+%==============================================================================
+% 2. RELATED WORK
+%==============================================================================
+\section{Related Work}
+\label{sec:related_work}
+
+Discuss previous research and how your work relates to or differs from existing 
+approaches \cite{reference_example}.
+
+%==============================================================================
+% 3. METHODOLOGY
+%==============================================================================
+\section{Methodology}
+\label{sec:methodology}
+
+Describe your research methodology in detail.
+
+\subsection{Problem Formulation}
+\label{subsec:problem_formulation}
+
+Define the problem mathematically:
+\begin{equation}
+    \label{eq:example_equation}
+    E = mc^2
+\end{equation}
+
+\subsection{Proposed Approach}
+\label{subsec:proposed_approach}
+
+Explain your approach with algorithms if applicable:
+
+\begin{algorithm}
+\caption{Example Algorithm}
+\label{alg:example}
+\begin{algorithmic}[1]
+\Procedure{ExampleProcedure}{input}
+    \State Initialize variables
+    \For{each iteration}
+        \State Process data
+        \State Update parameters
+    \EndFor
+    \State \Return output
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+%==============================================================================
+% 4. EXPERIMENTS
+%==============================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+Describe your experimental setup, datasets, and evaluation metrics.
+
+\subsection{Experimental Setup}
+\label{subsec:experimental_setup}
+
+Provide details about hardware, software, and parameters used.
+
+\subsection{Datasets}
+\label{subsec:datasets}
+
+Describe the datasets used for evaluation.
+
+\subsection{Evaluation Metrics}
+\label{subsec:evaluation_metrics}
+
+Define the metrics used to measure performance.
+
+%==============================================================================
+% 5. RESULTS AND DISCUSSION
+%==============================================================================
+\section{Results and Discussion}
+\label{sec:results}
+
+Present and analyze your results.
+
+\subsection{Quantitative Results}
+\label{subsec:quantitative_results}
+
+Include tables with numerical results:
+
+\begin{table}[H]
+\centering
+\caption{Example Results Table}
+\label{tab:example_results}
+\begin{tabular}{lccc}
+\toprule
+Method & Metric 1 & Metric 2 & Metric 3 \\
+\midrule
+Baseline & 0.85 & 0.78 & 0.92 \\
+Method A & 0.88 & 0.81 & 0.94 \\
+Method B & \textbf{0.91} & \textbf{0.85} & \textbf{0.96} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Qualitative Results}
+\label{subsec:qualitative_results}
+
+Include figures to visualize results:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/example_figure.png}
+\caption{Example figure showing results. Replace with your actual figure.}
+\label{fig:example_results}
+\end{figure}
+
+\subsection{Discussion}
+\label{subsec:discussion}
+
+Interpret the results and discuss their implications.
+
+%==============================================================================
+% 6. CONCLUSION
+%==============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Summarize the key findings and their significance. Discuss limitations and 
+future work directions.
+
+%==============================================================================
+% ACKNOWLEDGMENTS
+%==============================================================================
+\section*{Acknowledgments}
+\label{sec:acknowledgments}
+
+Acknowledge funding sources, collaborators, and anyone who contributed to 
+this work.
+
+%==============================================================================
+% REFERENCES
+%==============================================================================
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+%==============================================================================
+% APPENDIX
+%==============================================================================
+\appendix
+\section{Additional Derivations}
+\label{app:derivations}
+
+Include supplementary mathematical derivations or proofs here.
+
+\section{Additional Results}
+\label{app:additional_results}
+
+Include supplementary experimental results here.
+
+\end{document}
