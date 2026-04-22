@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1775026699.1025 "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" "main.pdf" "main" 1775026703.73088 2
-  "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" 1775026694.18857 40083 a5064cf291ace574999d7e07560fb4f8 ""
+["pdflatex"] 1776899591.81915 "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" "main.pdf" "main" 1776899596.67261 0
+  "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" 1776899586.79137 41860 7b7f6f7e84866dbcb0299846d29667b0 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -75,12 +75,10 @@
   "/usr/local/texlive/2026/texmf.cnf" 1772409725 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
   "assets/16bit_enhanced.png" 1775024471.90429 15390831 c691ab1d823cd09da7a7c87f516b4996 ""
   "assets/8bit_enhanced.png" 1775024478.28132 4374405 1d59095c68dd276e5cee24c26bba484c ""
-  "assets/dark_input.png" 0 -1 0 ""
   "assets/dark_raw_input.png" 1775024450.98385 2564437 1ecc648fc09acf2715578be312231809 ""
-  "assets/gamma_enhanced.png" 0 -1 0 ""
-  "assets/vevid_enhanced.png" 0 -1 0 ""
-  "main.aux" 1775026703.68172 6872 173b1143fe63c58dc9943d9a6d524793 "pdflatex"
-  "main.tex" 1775026694.18857 40083 a5064cf291ace574999d7e07560fb4f8 ""
+  "assets/vevid_gamma_comparison_tf.png" 1776894651.18 441590 d387da8eaf94ebac94173104337b4922 ""
+  "main.aux" 1776899596.64258 7538 9fa541f8112e212bee5c7adc0ac14d91 "pdflatex"
+  "main.tex" 1776899586.79137 41860 7b7f6f7e84866dbcb0299846d29667b0 ""
   (generated)
   "main.aux"
   "main.log"

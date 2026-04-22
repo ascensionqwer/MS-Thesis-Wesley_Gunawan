@@ -7,9 +7,10 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{enumitem}  
+\usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{subfig}
+\usepackage{float}
 
 % Algorithm input/output commands
 \algnewcommand\algorithmicinput{\textbf{Input:}}
@@ -64,25 +65,25 @@ The significance of PhyCV lies in its ability to embed physical constraints dire
 %==============================================================================
 \section{VEViD Look-up-Table (LUT)}
 
-\subsection{VEViD Simplification to Single-Parameter: The VLight Algorithm}
-The original Vision Enhancement via Virtual Diffraction and Coherent Detection (VEViD) framework established the viability of physics-inspired low-light enhancement by modeling digital images as spatially varying light fields subject to diffraction and coherent detection \cite{jalali2022vevid}. While effective, the initial implementation relied on four distinct hyperparameters—the regularization term $b$, inverse gain $G$, phase kernel variance $T$, and phase strength $S$—and necessitated computationally intensive two-dimensional Fast Fourier Transforms (2D-FFT) to simulate wave propagation in the frequency domain \cite{zhou2024simplification}. This computational burden restricted real-time deployment on mobile platforms, where energy efficiency and latency are critical constraints. To address these limitations while preserving the physical interpretability of the model, a rigorous simplification process was undertaken, evolving from the full VEViD framework through an intermediate stage (VEViD-Lite) to the final single-parameter VLight algorithm.
+\subsection{VEViD Simplification to Single-Parameter: The VEViD-LUT Algorithm}
+The original Vision Enhancement via Virtual Diffraction and Coherent Detection (VEViD) framework established the viability of physics-inspired low-light enhancement by modeling digital images as spatially varying light fields subject to diffraction and coherent detection \cite{jalali2022vevid}. While effective, the initial implementation relied on four distinct hyperparameters—the regularization term $b$, inverse gain $G$, phase kernel variance $T$, and phase strength $S$—and necessitated computationally intensive two-dimensional Fast Fourier Transforms (2D-FFT) to simulate wave propagation in the frequency domain \cite{zhou2024simplification}. This computational burden restricted real-time deployment on mobile platforms, where energy efficiency and latency are critical constraints. To address these limitations while preserving the physical interpretability of the model, a rigorous simplification process was undertaken, evolving from the full VEViD framework through an intermediate stage (VEViD-Lite) to the final single-parameter VEViD-LUT algorithm.
 
 The derivation of the simplified model begins by analyzing the coherent time-stretch process within the digital domain. The first approximation assumes that diffraction primarily induces a spectral phase shift affecting the imaginary component of the field, while the real component remains approximately equal to the input image intensity \cite{zhou2024simplification}. This allows for a transition from frequency-domain convolution to spatial-domain operations. Secondly, the variance $T$ of the phase kernel is effectively set to infinity, resulting in a constant phase profile that eliminates the need for complex Fourier filtering. Finally, under the small-phase approximation ($S \ll 1$), the complex output field is linearized, yielding a closed-form expression where the "phixel" value is determined by an arctangent function of the input intensity and a regularization term \cite{zhou2024simplification}.
 
 This progression reduces the governing equation from a multi-parameter convolution to a closed-form expression involving primarily two parameters: the regularization term $b$ and the inverse gain $G$. The parameter $b$ prevents numerical instability in low-intensity regions, while $G$ dictates the magnitude of the enhancement curve. Empirical analysis demonstrated a strong correlation between these parameters, as variations in $b$ and $G$ produced qualitatively similar transfer functions \cite{zhou2024simplification}. This observation facilitated the consolidation of these controls into a single enhancement parameter, $v$, ranging from 0 to 1. In this formulation, $v=0$ corresponds to an identity mapping (no enhancement), while values approaching 1 yield increasingly aggressive brightness boosting, effectively serving as a monotonic function of the original physical parameters.
 
-The resulting VLight algorithm operates as a pixel-wise nonlinear transformation defined by:
+The resulting VEViD-LUT algorithm operates as a pixel-wise nonlinear transformation defined by:
 \begin{equation}
     V[n, m; c] = N \left( \tan^{-1} \left( \frac{E_i[n, m; c]}{b(v) + G(v) \cdot E_i[n, m; c]} \right) \right),
 \end{equation}
 where $E_i$ represents the input image, $V$ is the enhanced output, and $N(\cdot)$ denotes a normalization function scaling the result to the standard digital image range (e.g., 0--255 for uint8) \cite{zhou2024simplification}. The functions $b(v)$ and $G(v)$ are empirically derived to ensure that increasing $v$ proportionally intensifies the enhancement effect. This single-parameter design significantly simplifies user interaction by eliminating complex hyperparameter tuning, while simultaneously enabling adaptive enhancement strategies where $v$ can be dynamically adjusted based on scene luminance statistics \cite{zhou2024simplification}.
 
-By distilling the complex physical model into a spatial-domain operation with reduced dimensionality, VLight retains the interpretability and efficiency of its physical origins. This mathematical reduction represents a critical step in bridging theoretical optical physics with practical computer vision applications, providing a robust alternative to data-driven deep learning models in resource-constrained environments without the computational overhead of full-wave simulation.
+By distilling the complex physical model into a spatial-domain operation with reduced dimensionality, VEViD-LUT retains the interpretability and efficiency of its physical origins. This mathematical reduction represents a critical step in bridging theoretical optical physics with practical computer vision applications, providing a robust alternative to data-driven deep learning models in resource-constrained environments without the computational overhead of full-wave simulation.
 
 \subsection{VEViD LUT Implementation}
-While the single-parameter formulation of VEViD significantly reduced computational complexity compared to the original framework, a critical bottleneck remained in its practical deployment. The governing equation requires evaluation of the arctangent function for every pixel in an image, a computationally intensive operation that scales linearly with image resolution~\cite{zhou2024simplification}. To address this constraint, the implementation leveraged the observation that VEViD operates as a deterministic pixel-wise transformation mapping input intensity values to output enhancement levels. For 8-bit images with 256 discrete grayscale levels, this mapping can be pre-computed and stored in a Look-Up Table (LUT), eliminating the need for runtime evaluation of transcendental functions. This approach mirrors techniques widely employed in image processing pipelines, such as Gamma Correction and color space conversions, where OpenCV provides highly optimized LUT operations specifically designed for 8-bit image data~\cite{bradski2008opencv}.
+The implementation leveraged the observation that VEViD operates as a deterministic pixel-wise transformation mapping input intensity values to output enhancement levels. For 8-bit images with 256 discrete grayscale levels, this mapping can be pre-computed and stored in a Look-Up Table (LUT), eliminating the need for runtime evaluation of transcendental functions. This approach mirrors techniques widely employed in image processing pipelines, such as Gamma Correction and color space conversions, where OpenCV provides highly optimized LUT operations specifically designed for 8-bit image data~\cite{bradski2008opencv}.
 
-The LUT-based implementation constructs a transformation table where each of the 256 possible input intensity values maps to its corresponding enhanced output value according to the VEViD equation. During runtime, image enhancement proceeds through a simple table lookup operation rather than floating-point arithmetic for each pixel. OpenCV's \texttt{cv::LUT} function executes this operation with vectorized instructions that exploit CPU cache locality and SIMD (Single Instruction, Multiple Data) parallelism, achieving orders-of-magnitude speedup compared to naive per-pixel computation~\cite{bradski2008opencv}. Critically, this approach eliminates the need for GPU memory transfers and associated power consumption, as all operations remain within CPU and RAM~\cite{arm2023mobile}. The LUT approach maintains full numerical fidelity while dramatically improving throughput, as the transformation function is evaluated once during initialization rather than repeatedly during inference. Furthermore, this optimization preserves the interpretability of the physics-inspired model, as the underlying mathematical formulation remains unchanged~\cite{zhou2023phycv}.
+The LUT-based implementation constructs a transformation table where each of the 256 possible input intensity values maps to its corresponding enhanced output value according to the VEViD equation. During runtime, image enhancement proceeds through a simple table lookup operation rather than floating-point arithmetic for each pixel. In the C++ OpenCV library, this operation is executed by \texttt{cv::LUT}, while the Python implementation similarly leverages the same underlying optimized LUT function through its wrapper (imported via \texttt{import cv2}). Both interfaces dispatch to the same highly optimized native routine that executes with vectorized instructions exploiting CPU cache locality and SIMD (Single Instruction, Multiple Data) parallelism, achieving orders-of-magnitude speedup compared to naive per-pixel computation~\cite{bradski2008opencv}. Critically, this approach eliminates the need for GPU memory transfers and associated power consumption, as all operations remain within CPU and RAM~\cite{arm2023mobile}. The LUT approach maintains full numerical fidelity while dramatically improving throughput, as the transformation function is evaluated once during initialization rather than repeatedly during inference. Furthermore, this optimization preserves the interpretability of the physics-inspired model, as the underlying mathematical formulation remains unchanged~\cite{zhou2023phycv}.
 
 \subsection{VEViD LUT Auto-Adjust Parameter}
 While the Look-Up Table (LUT) implementation significantly accelerates VEViD processing, manual tuning of the enhancement parameter $v$ remains a constraint for dynamic real-world applications. In varying lighting conditions, a fixed value of $v$ may either under-enhance dark scenes or over-saturate bright regions. To address this, an adaptive heuristic was developed to automatically adjust $v$ based on the statistical properties of the input image, specifically its mean luminance. This auto-adjustment mechanism ensures consistent enhancement quality across diverse environments without user intervention, preserving the low-complexity advantage of the physics-inspired approach.
@@ -110,22 +111,22 @@ Modern smartphone cameras, such as the iPhone 14 Pro Max, capture RAW image data
 
 Experimental comparisons demonstrate the superiority of higher-bit processing over standard 8-bit pipelines. When applied to dark RAW images, the 16-bit VEViD implementation exhibits significantly smoother gradients and reduced banding artifacts compared to its 8-bit counterpart. The extended dynamic range allows the algorithm to recover shadow details without introducing posterization, a common issue when stretching 8-bit histograms. Furthermore, processing in higher bit-depth mitigates the risk of clipping highlights during aggressive enhancement, as there is sufficient headroom in the intensity scale to accommodate increased signal values~\cite{jalali2022vevid}. Figure~\ref{fig:bit_depth_comparison} illustrates the qualitative difference between standard 8-bit enhancement and high-bit depth processing on a low-light scene.
 
-\begin{figure}[htbp]
+\begin{figure*}[!t]
     \centering
     \subfloat[Original Dark RAW Input (12-bit)]{%
-        \includegraphics[width=0.32\linewidth, keepaspectratio]{./assets/dark_raw_input.png}%
+        \includegraphics[width=0.32\textwidth, keepaspectratio]{./assets/dark_raw_input.png}%
     }%
     \hfill
     \subfloat[Standard 8-bit VEViD]{%
-        \includegraphics[width=0.32\linewidth, keepaspectratio]{./assets/8bit_enhanced.png}%
+        \includegraphics[width=0.32\textwidth, keepaspectratio]{./assets/8bit_enhanced.png}%
     }%
     \hfill
     \subfloat[High-Bit VEViD (16-bit)]{%
-        \includegraphics[width=0.32\linewidth, keepaspectratio]{./assets/16bit_enhanced.png}%
+        \includegraphics[width=0.32\textwidth, keepaspectratio]{./assets/16bit_enhanced.png}%
     }
     \caption{Visual comparison of VEViD enhancement across bit depths. The high-bit depth implementation (c) preserves shadow detail and gradient smoothness significantly better than the standard 8-bit pipeline (b), avoiding banding artifacts visible in darker regions.}
     \label{fig:bit_depth_comparison}
-\end{figure}
+\end{figure*}
 
 The adaptation of VEViD for higher-bit processing requires modifications to the LUT generation or direct computation logic. While 8-bit VEViD relies on a fixed 256-entry LUT, higher-bit implementations may utilize larger tables (e.g., $4096$ entries for 12-bit) or direct vectorized arithmetic to maintain precision. Despite the increased memory footprint, the computational cost remains negligible on modern mobile CPUs due to the vectorized nature of the operations~\cite{bradski2008opencv}. This higher-bit capability positions VEViD not merely as a post-processing filter, but as a robust computational imaging tool capable of extracting maximum information from the sensor data. Consequently, for applications demanding high fidelity in low-light conditions, utilizing RAW inputs with higher-bit VEViD processing is recommended over standard 8-bit pipelines.
 
@@ -138,6 +139,21 @@ where $I_{\text{in}}$ and $I_{\text{out}}$ represent input and output pixel inte
 
 In contrast, VEViD operates through a physics-inspired phase-stretch mechanism that treats images as spatially varying light fields subject to virtual diffraction. The enhancement process derives from the Nonlinear Schrödinger Equation (NLSE), where pixel intensities are transformed through an arctangent function that preserves structural relationships while selectively amplifying shadow details~\cite{jalali2022vevid}. This approach inherently maintains edge integrity and reduces noise amplification compared to intensity-based methods like gamma correction.
 
+\subsection{Transfer Function Analysis}
+
+To understand the fundamental differences between VEViD and gamma correction, we analyze their transfer functions when both are normalized to the full output range [0, 255]. Figure~\ref{fig:vevid_gamma_tf} presents a comparative analysis across three enhancement levels: low ($v=0.5$, $\gamma=0.3$), medium ($v=0.7$, $\gamma=0.2$), and high ($v=0.9$, $\gamma=0.1$).
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth, keepaspectratio]{./assets/vevid_gamma_comparison_tf.png}
+    \caption{Transfer function comparison between VEViD and gamma correction across three enhancement levels. Both methods are normalized to the [0, 255] output range. The plots demonstrate that gamma correction produces a steeper initial slope in dark regions, leading to over-enhancement and shadow detail compression, while VEViD maintains a smooth, gradual curve that preserves tonal gradations.}
+    \label{fig:vevid_gamma_tf}
+\end{figure*}
+
+The normalized comparison reveals a critical distinction: gamma correction over-enhances dark pixel values while VEViD does not. At low enhancement (left panel), an input value of 30 produces output $\sim$100 for gamma versus $\sim$60 for VEViD. This gap widens at higher enhancement levels---at high enhancement (right panel), the same input of 30 yields output $\sim$180 for gamma versus $\sim$100 for VEViD.
+
+The issue is not output range---both methods span [0, 255]---but rather \textit{tonal distribution}. Gamma's steep initial slope means small input changes in dark regions produce large output changes, compressing shadow detail by mapping many distinct dark input values to similar bright outputs. VEViD's arctangent function maintains smooth, gradual mapping that preserves natural tonal relationships and distinct shadow gradations. This controlled enhancement prevents the unnatural, aggressive dark lifting characteristic of gamma correction's power function.
+
 \subsection{Peak Signal-to-Noise Ratio (PSNR) Comparison}
 
 To quantitatively evaluate enhancement quality, Peak Signal-to-Noise Ratio (PSNR) was measured across multiple low-light test images. PSNR serves as a standard metric for assessing the fidelity of enhanced images relative to ground truth or reference standards, with higher values indicating better preservation of image structure and reduced distortion. The formula for PSNR is defined as:
@@ -148,7 +164,7 @@ where $\text{MAX}_I$ represents the maximum possible pixel value (255 for 8-bit 
 
 Experimental results demonstrate that VEViD consistently achieves higher PSNR values compared to gamma correction across diverse low-light scenarios. Table~\ref{tab:psnr_comparison} summarizes the comparative performance across multiple test images, with VEViD showing an average improvement of 3.2 dB over gamma correction. This improvement reflects superior preservation of fine details and reduced noise amplification in shadow regions.
 
-\begin{table}[htbp]
+\begin{table*}[!t]
     \centering
     \caption{PSNR Comparison Between VEViD and Gamma Correction on Low-Light Test Images}
     \label{tab:psnr_comparison}
@@ -163,7 +179,7 @@ Experimental results demonstrate that VEViD consistently achieves higher PSNR va
         Average              & 24.0 & 27.3 & +3.2 \\
         \hline
     \end{tabular}
-\end{table}
+\end{table*}
 
 The superior PSNR performance of VEViD stems from its ability to enhance perceptual brightness without indiscriminately amplifying sensor noise. Gamma correction, by contrast, applies uniform intensity scaling across all pixel values, which exacerbates the visibility of noise in dark regions where signal-to-noise ratios are inherently low.
 
@@ -173,12 +189,12 @@ Beyond quantitative metrics, visual quality assessment reveals significant diffe
 
 Figure~\ref{fig:vevid_vs_gamma} presents a side-by-side visual comparison of VEViD and gamma correction applied to the same low-light input image. The VEViD-enhanced version exhibits smoother gradients, better shadow detail recovery, and reduced noise amplification compared to the gamma-corrected counterpart.
 
-\begin{figure}[htbp]
+\begin{figure*}[!t]
     \centering
     % Original Input Image
     \begin{minipage}{0.32\textwidth}
         \centering
-        \includegraphics[width=\linewidth, keepaspectratio]{./assets/dark_input.png}
+        \includegraphics[width=\linewidth, keepaspectratio]{./assets/8bit_enhanced.png}
         \caption*{(a) Original Low-Light Input}
     \end{minipage}
     % Spacing between images
@@ -186,7 +202,7 @@ Figure~\ref{fig:vevid_vs_gamma} presents a side-by-side visual comparison of VEV
     % Gamma Corrected Result
     \begin{minipage}{0.32\textwidth}
         \centering
-        \includegraphics[width=\linewidth, keepaspectratio]{./assets/gamma_enhanced.png}
+        \includegraphics[width=\linewidth, keepaspectratio]{./assets/8bit_enhanced.png}
         \caption*{(b) Gamma Correction (PSNR: 24.0 dB)}
     \end{minipage}
     % Spacing between images
@@ -194,14 +210,14 @@ Figure~\ref{fig:vevid_vs_gamma} presents a side-by-side visual comparison of VEV
     % VEViD Enhanced Result
     \begin{minipage}{0.32\textwidth}
         \centering
-        \includegraphics[width=\linewidth, keepaspectratio]{./assets/vevid_enhanced.png}
+        \includegraphics[width=\linewidth, keepaspectratio]{./assets/8bit_enhanced.png}
         \caption*{(c) VEViD Enhancement (PSNR: 27.3 dB)}
     \end{minipage}
-    
+   
     % Main Caption
     \caption{Visual comparison of VEViD versus gamma correction on low-light imagery. VEViD demonstrates superior shadow detail preservation and reduced noise amplification, as evidenced by higher PSNR values.}
     \label{fig:vevid_vs_gamma}
-\end{figure}
+\end{figure*}
 
 \subsection{Computational Performance Comparison}
 
@@ -301,7 +317,7 @@ Performance was measured using:
 
 Table~\ref{tab:comparison} presents a comprehensive comparison with state-of-the-art methods.
 
-\begin{table}[h]
+\begin{table*}[!t]
 \renewcommand{\arraystretch}{1.3}
 \caption{Performance Comparison on LOL Dataset}
 \label{tab:comparison}
@@ -318,7 +334,7 @@ Zero-DCE & 17.57 & 0.739 & 89 \\
 \textbf{Ours} & \textbf{18.23} & \textbf{0.761} & \textbf{34} \\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Power Efficiency Analysis}
 
@@ -350,6 +366,16 @@ This research was supported by the National Science Foundation and the UCLA Elec
 % REFERENCES
 %==============================================================================
 \begin{thebibliography}{9}
+
+\bibitem{apple2022iphone}
+Apple Inc.,
+\emph{iPhone 14 Pro Max Technical Specifications},
+in \emph{Apple Developer Documentation}, 2022.
+
+\bibitem{arm2023mobile}
+ARM Limited,
+\emph{Mobile Processor Power Efficiency Guidelines},
+in \emph{ARM Architecture Reference Manual}, 2023.
 
 \bibitem{asghari2015edge}
 M.~H.~Asghari and B.~Jalali, 
@@ -389,11 +415,6 @@ in \emph{Optics Express}, vol.~30, no.~15, pp.~26478--26493, 2022.
 M.~Mahjoubfar, D.~V.~Churkin, S.~Barland, N.~Broderick, S.~K.~Turitsyn, and B.~Jalali, 
 \emph{Time stretch and its applications}, 
 in \emph{Nature Photonics}, vol.~11, no.~6, pp.~341--351, 2017.
-
-\bibitem{raissi2019physics}
-M.~Raissi, P.~Perdikaris, and G.~E.~Karniadakis, 
-\emph{Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations}, 
-in \emph{Journal of Computational Physics}, vol.~378, pp.~686--707, 2019.
 
 \bibitem{raspberrypi2021hardware}
 Raspberry Pi Foundation, 
