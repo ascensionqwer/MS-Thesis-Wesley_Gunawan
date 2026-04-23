@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{float}
+\usepackage{stfloats}
 
 % Algorithm input/output commands
 \algnewcommand\algorithmicinput{\textbf{Input:}}
@@ -109,7 +110,7 @@ The standard implementation of VEViD, optimized for efficiency on mobile platfor
 
 Modern smartphone cameras, such as the iPhone 14 Pro Max, capture RAW image data at a bit depth of 12 bits, providing $4096$ discrete intensity levels compared to the $256$ levels of standard 8-bit imagery~\cite{apple2022iphone}. By processing this higher-bit data prior to tone mapping, VEViD can operate within a continuous floating-point or 16-bit integer domain. This approach preserves the linear relationship between photon count and pixel value, allowing the physics-inspired enhancement algorithm to manipulate a richer signal space. The workflow involves ingesting the RAW data, normalizing it to a $[0, 1]$ float range, applying the VEViD phase transformation equation directly without quantization, and finally mapping the result to a displayable 8-bit format via gamma correction or perceptual tone mapping.
 
-Experimental comparisons demonstrate the superiority of higher-bit processing over standard 8-bit pipelines. When applied to dark RAW images, the 16-bit VEViD implementation exhibits significantly smoother gradients and reduced banding artifacts compared to its 8-bit counterpart. The extended dynamic range allows the algorithm to recover shadow details without introducing posterization, a common issue when stretching 8-bit histograms. Furthermore, processing in higher bit-depth mitigates the risk of clipping highlights during aggressive enhancement, as there is sufficient headroom in the intensity scale to accommodate increased signal values~\cite{jalali2022vevid}. Figure~\ref{fig:bit_depth_comparison} illustrates the qualitative difference between standard 8-bit enhancement and high-bit depth processing on a low-light scene.
+Experimental comparisons demonstrate the superiority of higher-bit processing over standard 8-bit pipelines. When applied to dark RAW images, the 16-bit VEViD implementation exhibits significantly smoother gradients and reduced banding artifacts compared to its 8-bit counterpart, as shown in Fig.~\ref{fig:bit_depth_comparison}. The extended dynamic range allows the algorithm to recover shadow details without introducing posterization, a common issue when stretching 8-bit histograms. As evident in Fig.~\ref{fig:bit_depth_comparison}(b), the standard 8-bit VEViD shows visible banding in darker regions, whereas Fig.~\ref{fig:bit_depth_comparison}(c) demonstrates that high-bit depth processing preserves gradient smoothness. Furthermore, processing in higher bit-depth mitigates the risk of clipping highlights during aggressive enhancement, as there is sufficient headroom in the intensity scale to accommodate increased signal values~\cite{jalali2022vevid}. Figure~\ref{fig:bit_depth_comparison} illustrates the qualitative difference between standard 8-bit enhancement and high-bit depth processing on a low-light scene.
 
 \begin{figure*}[!t]
     \centering
@@ -150,9 +151,9 @@ To understand the fundamental differences between VEViD and gamma correction, we
     \label{fig:vevid_gamma_tf}
 \end{figure*}
 
-The normalized comparison reveals a critical distinction: gamma correction over-enhances dark pixel values while VEViD does not. At low enhancement (left panel), an input value of 30 produces output $\sim$100 for gamma versus $\sim$60 for VEViD. This gap widens at higher enhancement levels---at high enhancement (right panel), the same input of 30 yields output $\sim$180 for gamma versus $\sim$100 for VEViD.
+The normalized comparison in Fig.~\ref{fig:vevid_gamma_tf} reveals a critical distinction: gamma correction over-enhances dark pixel values while VEViD does not. At low enhancement (left panel), an input value of 30 produces output $\sim$100 for gamma versus $\sim$60 for VEViD. This gap widens at higher enhancement levels---at high enhancement (right panel), the same input of 30 yields output $\sim$180 for gamma versus $\sim$100 for VEViD. As shown in Fig.~\ref{fig:vevid_gamma_tf}, gamma correction exhibits a near-vertical initial slope in the dark region (input 0--64), indicating aggressive brightening of shadow pixels.
 
-The issue is not output range---both methods span [0, 255]---but rather \textit{tonal distribution}. Gamma's steep initial slope means small input changes in dark regions produce large output changes, compressing shadow detail by mapping many distinct dark input values to similar bright outputs. VEViD's arctangent function maintains smooth, gradual mapping that preserves natural tonal relationships and distinct shadow gradations. This controlled enhancement prevents the unnatural, aggressive dark lifting characteristic of gamma correction's power function.
+The issue is not output range---both methods span [0, 255]---but rather \textit{tonal distribution}. Gamma's steep initial slope means small input changes in dark regions produce large output changes, compressing shadow detail by mapping many distinct dark input values to similar bright outputs. VEViD's arctangent function maintains smooth, gradual mapping that preserves natural tonal relationships and distinct shadow gradations. This controlled enhancement prevents the unnatural, aggressive dark lifting characteristic of gamma correction's power function, as evident from the smoother curves in Fig.~\ref{fig:vevid_gamma_tf}.
 
 \subsection{Peak Signal-to-Noise Ratio (PSNR) Comparison}
 
@@ -187,7 +188,7 @@ The superior PSNR performance of VEViD stems from its ability to enhance percept
 
 Beyond quantitative metrics, visual quality assessment reveals significant differences in enhancement characteristics between the two methods. Gamma correction tends to produce images with washed-out highlights and visible banding artifacts in shadow regions, particularly when aggressive enhancement values are applied. VEViD maintains more natural color saturation and preserves edge sharpness through its phase-based transformation mechanism~\cite{zhou2024simplification}.
 
-Figure~\ref{fig:vevid_vs_gamma} presents a side-by-side visual comparison of VEViD and gamma correction applied to the same low-light input image. The VEViD-enhanced version exhibits smoother gradients, better shadow detail recovery, and reduced noise amplification compared to the gamma-corrected counterpart.
+Figure~\ref{fig:vevid_vs_gamma} presents a side-by-side visual comparison of VEViD and gamma correction applied to the same low-light input image. As shown in Fig.~\ref{fig:vevid_vs_gamma}(b), gamma correction produces washed-out highlights and amplifies noise in dark regions due to its uniform intensity scaling. In contrast, Fig.~\ref{fig:vevid_vs_gamma}(c) demonstrates that VEViD enhancement preserves natural color saturation while recovering shadow details. The VEViD-enhanced version exhibits smoother gradients, better shadow detail recovery, and reduced noise amplification compared to the gamma-corrected counterpart, consistent with the PSNR improvements reported in Table~\ref{tab:psnr_comparison}.
 
 \begin{figure*}[!t]
     \centering

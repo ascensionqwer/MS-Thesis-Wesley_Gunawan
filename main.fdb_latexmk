@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1776899591.81915 "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" "main.pdf" "main" 1776899596.67261 0
-  "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" 1776899586.79137 41860 7b7f6f7e84866dbcb0299846d29667b0 ""
+["pdflatex"] 1776909211.73776 "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" "main.pdf" "main" 1776909216.68105 0
+  "/Users/wesleygwn/Library/CloudStorage/GoogleDrive-wesleygwn@gmail.com/My Drive/Work/UCLA/Masters/MS_Thesis_Research/Wesley_papers thesis_&_codes/Masters_Thesis/LaTex_Write_Up/main.tex" 1776909175.27701 42862 38d45306f3642ebf2331d0207e04059e ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -67,6 +67,7 @@
   "/usr/local/texlive/2026/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd" 1137110629 985 1ed784d7bfe47179f3550d2303b073f8 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1137110629 961 15056f4a61917ceed3a44e4ac11fcc52 ""
+  "/usr/local/texlive/2026/texmf-dist/tex/latex/sttools/stfloats.sty" 1750880090 19135 2044f4970d2ece01df5d5dfacaaaec0f ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/subfig/subfig.sty" 1158586182 21369 9ef165ca6df8815c92e693146a376c92 ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/local/texlive/2026/texmf-dist/web2c/texmf.cnf" 1770478701 43630 e9fa012910491fe5ae08a72c3c2997a7 ""
@@ -77,8 +78,8 @@
   "assets/8bit_enhanced.png" 1775024478.28132 4374405 1d59095c68dd276e5cee24c26bba484c ""
   "assets/dark_raw_input.png" 1775024450.98385 2564437 1ecc648fc09acf2715578be312231809 ""
   "assets/vevid_gamma_comparison_tf.png" 1776894651.18 441590 d387da8eaf94ebac94173104337b4922 ""
-  "main.aux" 1776899596.64258 7538 9fa541f8112e212bee5c7adc0ac14d91 "pdflatex"
-  "main.tex" 1776899586.79137 41860 7b7f6f7e84866dbcb0299846d29667b0 ""
+  "main.aux" 1776909216.64898 7538 14b4d89281b023ac00f7d9121aafcfb8 "pdflatex"
+  "main.tex" 1776909175.27701 42862 38d45306f3642ebf2331d0207e04059e ""
   (generated)
   "main.aux"
   "main.log"

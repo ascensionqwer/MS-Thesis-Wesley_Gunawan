@@ -38,25 +38,25 @@
 \citation{bradski2008opencv}
 \citation{gonzalez2018digital}
 \citation{jalali2022vevid}
-\citation{hore2010image}
-\citation{zhou2024simplification}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visual comparison of VEViD enhancement across bit depths. The high-bit depth implementation (c) preserves shadow detail and gradient smoothness significantly better than the standard 8-bit pipeline (b), avoiding banding artifacts visible in darker regions.}}{4}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:bit_depth_comparison}{{1}{4}{}{figure.1}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Original Dark RAW Input (12-bit)}}}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Standard 8-bit VEViD}}}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {High-Bit VEViD (16-bit)}}}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}VEViD versus Gamma Correction}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Transfer Function Analysis}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Peak Signal-to-Noise Ratio (PSNR) Comparison}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Visual Quality Assessment}{4}{}\protected@file@percent }
-\citation{bradski2008opencv}
+\citation{hore2010image}
 \citation{zhou2024simplification}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visual comparison of VEViD enhancement across bit depths. The high-bit depth implementation (c) preserves shadow detail and gradient smoothness significantly better than the standard 8-bit pipeline (b), avoiding banding artifacts visible in darker regions.}}{5}{}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:bit_depth_comparison}{{1}{5}{}{figure.1}{}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Original Dark RAW Input (12-bit)}}}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Standard 8-bit VEViD}}}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {High-Bit VEViD (16-bit)}}}{5}{}\protected@file@percent }
+\citation{bradski2008opencv}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Transfer function comparison between VEViD and gamma correction across three enhancement levels. Both methods are normalized to the [0, 255] output range. The plots demonstrate that gamma correction produces a steeper initial slope in dark regions, leading to over-enhancement and shadow detail compression, while VEViD maintains a smooth, gradual curve that preserves tonal gradations.}}{5}{}\protected@file@percent }
 \newlabel{fig:vevid_gamma_tf}{{2}{5}{}{figure.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces PSNR Comparison Between VEViD and Gamma Correction on Low-Light Test Images}}{5}{}\protected@file@percent }
 \newlabel{tab:psnr_comparison}{{I}{5}{}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Peak Signal-to-Noise Ratio (PSNR) Comparison}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Visual Quality Assessment}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Computational Performance Comparison}{5}{}\protected@file@percent }
+\citation{zhou2024simplification}
 \citation{asghari2015edge}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Visual comparison of VEViD versus gamma correction on low-light imagery. VEViD demonstrates superior shadow detail preservation and reduced noise amplification, as evidenced by higher PSNR values.}}{6}{}\protected@file@percent }
 \newlabel{fig:vevid_vs_gamma}{{3}{6}{}{figure.3}{}}
@@ -72,7 +72,6 @@
 \@writefile{toc}{\contentsline {section}{\numberline {V}Experiments}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Datasets}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Evaluation Metrics}{6}{}\protected@file@percent }
 \bibcite{apple2022iphone}{1}
 \bibcite{arm2023mobile}{2}
 \bibcite{asghari2015edge}{3}
@@ -88,6 +87,9 @@
 \bibcite{zhou2022unified}{13}
 \bibcite{zhou2023phycv}{14}
 \bibcite{zhou2024simplification}{15}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Performance Comparison on LOL Dataset}}{7}{}\protected@file@percent }
+\newlabel{tab:comparison}{{II}{7}{}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Evaluation Metrics}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VI}Results and Discussion}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Quantitative Results}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Power Efficiency Analysis}{7}{}\protected@file@percent }
@@ -95,6 +97,4 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Discussion}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion and Future Directions}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Performance Comparison on LOL Dataset}}{8}{}\protected@file@percent }
-\newlabel{tab:comparison}{{II}{8}{}{table.2}{}}
-\gdef \@abspage@last{8}
+\gdef \@abspage@last{7}
